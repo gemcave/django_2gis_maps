@@ -22,36 +22,36 @@ This script expects:
 
 
 DG.then(function () {
-    var marker;
-    var geolocationInput = $('#id_geolocation');
-    map = DG.map('map', {
-        'center': [42.882004, 74.582748],
-        'zoom': 14
-    });
-    prepareMap();
-    map.on('click', function (e) {
-        if (!marker) {
-            marker = DG.marker([e.latlng.lat, e.latlng.lng], {
-                'draggable': true
-            }).addTo(map);
+	var marker;
+	var geolocationInput = $('#id_geolocation');
+	map = DG.map('map', {
+		'center': [51.15259, 71.427984],
+		'zoom': 14
+	});
+	prepareMap();
+	map.on('click', function (e) {
+		if (!marker) {
+			marker = DG.marker([e.latlng.lat, e.latlng.lng], {
+				'draggable': true
+			}).addTo(map);
 
-            geolocationInput.val(e.latlng.lat + ',' + e.latlng.lng);
+			geolocationInput.val(e.latlng.lat + ',' + e.latlng.lng);
 
-        }
-        else {
-            marker.setLatLng([e.latlng.lat, e.latlng.lng]);
-            geolocationInput.val(e.latlng.lat + ',' + e.latlng.lng);
-        }
-        marker.on('dragend', function (data) {
-            geolocationInput.val(data.target._latlng.lat + ',' + data.target._latlng.lng);
-        });
-    });
+		}
+		else {
+			marker.setLatLng([e.latlng.lat, e.latlng.lng]);
+			geolocationInput.val(e.latlng.lat + ',' + e.latlng.lng);
+		}
+		marker.on('dragend', function (data) {
+			geolocationInput.val(data.target._latlng.lat + ',' + data.target._latlng.lng);
+		});
+	});
 
-    function prepareMap() {
-        if (geolocationInput.val()) {
-            marker = DG.marker(geolocationInput.val().split(','), {'draggable': true}).addTo(map);
-            return true;
-        }
-        return false;
-    }
+	function prepareMap() {
+		if (geolocationInput.val()) {
+			marker = DG.marker(geolocationInput.val().split(','), { 'draggable': true }).addTo(map);
+			return true;
+		}
+		return false;
+	}
 });
