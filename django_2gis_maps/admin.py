@@ -5,15 +5,21 @@ from django_2gis_maps.fields import AddressField, GeoLocationField
 from django_2gis_maps.widgets import *
 
 
+# Input geolocation read-only
+### - To fast, upload info
+# GeoLocationField: {
+#     'widget': TextInput(attrs={
+#         'readonly': 'readonly'
+#     })
+# },
+
 class DoubleGisAdmin(admin.ModelAdmin):
     formfield_overrides = {
         AddressField: {
             'widget': DoubleGisMapsAddressWidget
         },
         GeoLocationField: {
-            'widget': TextInput(attrs={
-                'readonly': 'readonly'
-            })
+            'widget': TextInput()
         },
     }
 
