@@ -79,6 +79,7 @@ function init() {
     } else {
       marker.geometry.setCoordinates(e.get("coords"));
       myMap.geoObjects.add(marker);
+      geolocationInput.value = `${e.get("coords").join(",")}`;
     }
 
     marker.events.add("drag", function (e) {
