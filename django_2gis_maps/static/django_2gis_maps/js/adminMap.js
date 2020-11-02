@@ -27,9 +27,6 @@ ymaps.ready(init);
 function init() {
   var marker;
   var geolocationInput = document.querySelector("#id_geolocation");
-  // Создание карты.
-  // var lat = Number.parseFloat($('#map').attr('data-lat').split(';'));
-  // var lng = Number.parseFloat($('#map').attr('data-lng').split(';'));
 
   var geolocationInfo = geolocationInput.value
     ? geolocationInput.value.split(",")
@@ -49,6 +46,14 @@ function init() {
       "trafficControl", // Пробки
       "typeSelector", // Переключатель слоев карты
       "fullscreenControl", // Полноэкранный режим
+      new ymaps.control.SearchControl({
+        options: {
+          // вид - поисковая строка
+          size: "large",
+          // Включим возможность искать не только топонимы, но и организации.
+          provider: "yandex#search",
+        },
+      }),
     ],
   });
 
@@ -98,54 +103,3 @@ function init() {
     return false;
   }
 }
-
-// DG.then(function () {
-// 	var marker;
-// 	var geolocationInput = $('#id_geolocation');
-// 	map = DG.map('map', {
-// 		'center': [51.15259, 71.427984],
-// 		'zoom': 14
-// 	});
-// 	prepareMap();
-// 	map.on('click', function (e) {
-// 		if (!marker) {
-// 			marker = DG.marker([e.latlng.lat, e.latlng.lng], {
-// 				'draggable': true
-// 			}).addTo(map);
-
-// 			geolocationInput.val(e.latlng.lat + ',' + e.latlng.lng);
-
-// 		}
-// 		else {
-// 			marker.setLatLng([e.latlng.lat, e.latlng.lng]);
-// 			geolocationInput.val(e.latlng.lat + ',' + e.latlng.lng);
-// 		}
-// 		marker.on('dragend', function (data) {
-// 			geolocationInput.val(data.target._latlng.lat + ',' + data.target._latlng.lng);
-// 		});
-// 	});
-
-// 	function prepareMap() {
-// 		if (geolocationInput.val()) {
-// 			marker = DG.marker(geolocationInput.val().split(','), { 'draggable': true }).addTo(map);
-// 			return true;
-// 		}
-// 		return false;
-// 	}
-// });
-
-//
-// Добавить маркер по клику
-//
-// myMap.events.add('click', function (e) {
-// 				var myPlacemark = new ymaps.Placemark(e.get('coords'), {
-// 						// Хинт показывается при наведении мышкой на иконку метки.
-// 						hintContent: 'Содержимое всплывающей подсказки',
-// 						// Балун откроется при клике по метке.
-// 				}, {
-// 						preset: 'islands#darkGreenIcon',
-// 				});
-//
-// 				// После того как метка была создана, добавляем её на карту.
-// 				myMap.geoObjects.add(myPlacemark);
-// 		});
