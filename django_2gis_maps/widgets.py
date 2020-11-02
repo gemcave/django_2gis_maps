@@ -14,7 +14,7 @@ class DoubleGisMapsAddressWidget(widgets.TextInput):
         js = (
             'https://code.jquery.com/jquery-latest.min.js',
             # 'https://maps.api.2gis.ru/2.0/loader.js?pkg=full&skin=dark',
-						f"https://api-maps.yandex.ru/2.1/?lang=ru_RU${if settings.YANDEX_API_KEY f'&api_key=${settings.YANDEX_API_KEY}'}",
+						"https://api-maps.yandex.ru/2.1/?lang=ru_RU{api_key}".format(api_key=f'&api_key=${settings.YANDEX_API_KEY}'} if settings.YANDEX_API_KEY not null else ""),
             settings.STATIC_URL + 'django_2gis_maps/js/addMarkers.js',
             settings.STATIC_URL + 'django_2gis_maps/js/adminMap.js',
         )
