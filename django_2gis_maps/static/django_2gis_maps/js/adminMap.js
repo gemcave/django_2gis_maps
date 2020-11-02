@@ -21,56 +21,83 @@ This script expects:
 */
 
 // Функция ymaps.ready() будет вызвана, когда
-            // загрузятся все компоненты API, а также когда будет готово DOM-дерево.
+// загрузятся все компоненты API, а также когда будет готово DOM-дерево.
 ymaps.ready(init);
 
-
 function init() {
-		// Создание карты.
-		var lat = Number.parseFloat($('#ymap').attr('data-lat').split(';'));
-		var lng = Number.parseFloat($('#ymap').attr('data-lng').split(';'));
-		
-		var myMap = new ymaps.Map("ymap", {
-				// Координаты центра карты.
-				// Порядок по умолчнию: «широта, долгота».
-				center: [51.15259, 71.427984],
-				// Уровень масштабирования. Допустимые значения:
-				// от 0 (весь мир) до 19.
-				zoom: 17,
-				// Элементы управления
-				// https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/controls/standard-docpage/
-				controls: [
-						'zoomControl', // Ползунок масштаба
-						'trafficControl', // Пробки
-						'typeSelector', // Переключатель слоев карты
-						'fullscreenControl', // Полноэкранный режим
-				]
-		});
+  var marker;
+  var geolocationInput = document.querySelector("#id_geolocation");
+  // Создание карты.
+  // var lat = Number.parseFloat($('#map').attr('data-lat').split(';'));
+  // var lng = Number.parseFloat($('#map').attr('data-lng').split(';'));
 
-		// Добавление метки
-		// https://tech.yandex.ru/maps/doc/jsapi/2.1/ref/reference/Placemark-docpage/
-		var myPlacemark = new ymaps.Placemark([...prepareMap()], {
-				// Хинт показывается при наведении мышкой на иконку метки.
-				hintContent: 'Содержимое всплывающей подсказки',
-				// Балун откроется при клике по метке.
-				balloonContent: '{{ bath.address }}',
-		}, {
-				preset: 'islands#darkGreenIcon',
-		});
+  var geolocationInfo = geolocationInput.value
+    ? geolocationInput.value.split(",")
+    : [51.15259, 71.427984];
 
-		// После того как метка была создана, добавляем её на карту.
-		myMap.geoObjects.add(myPlacemark);
+  var myMap = new ymaps.Map("map", {
+    // Координаты центра карты.
+    // Порядок по умолчнию: «широта, долгота».
+    center: geolocationInfo,
+    // Уровень масштабирования. Допустимые значения:
+    // от 0 (весь мир) до 19.
+    zoom: 17,
+    // Элементы управления
+    // https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/controls/standard-docpage/
+    controls: [
+      "zoomControl", // Ползунок масштаба
+      "trafficControl", // Пробки
+      "typeSelector", // Переключатель слоев карты
+      "fullscreenControl", // Полноэкранный режим
+    ],
+  });
+
+  prepareMap(geolocationInput);
+  myMap.events.add("click", function (e) {
+    if (marker == null) {
+      console.log("NO Marker: ");
+      marker = new ymaps.Placemark(
+        e.get("coords"),
+        {
+          // Хинт показывается при наведении мышкой на иконку метки.
+          hintContent: "Содержимое всплывающей подсказки",
+          // Балун откроется при клике по метке.
+        },
+        {
+          preset: "islands#darkGreenIcon",
+        }
+      );
+      myMap.geoObjects.add(marker);
+      geolocationInput.value = `${e.get("coords").join(",")}`;
+    } else {
+      // console.log("Marker: "+ marker)
+      marker.geometry.setCoordinates(e.get("coords"));
+      myMap.geoObjects.add(marker);
+    }
+
+    marker.events.add("drag", function (e) {
+      // console.log(marker.geometry.getCoordinates());
+      geolocationInput.value = `${marker.geometry.getCoordinates().join(",")}`;
+    });
+  });
+
+  function prepareMap(geoInput) {
+    if (geoInput.value) {
+      marker = new ymaps.Placemark(
+        geoInput.value.split(","),
+        {
+          hintContent: "Содержимое всплывающей подсказки",
+        },
+        {
+          preset: "islands#darkGreenIcon",
+          draggable: true,
+        }
+      );
+      return true;
+    }
+    return false;
+  }
 }
-
-
-	function prepareMap() {
-		if (geolocationInput.val()) {
-			return geolocationInput.val().split(',')
-		}
-		return false;
-	}
-
-
 
 // DG.then(function () {
 // 	var marker;
@@ -106,3 +133,19 @@ function init() {
 // 		return false;
 // 	}
 // });
+
+//
+// Добавить маркер по клику
+//
+// myMap.events.add('click', function (e) {
+// 				var myPlacemark = new ymaps.Placemark(e.get('coords'), {
+// 						// Хинт показывается при наведении мышкой на иконку метки.
+// 						hintContent: 'Содержимое всплывающей подсказки',
+// 						// Балун откроется при клике по метке.
+// 				}, {
+// 						preset: 'islands#darkGreenIcon',
+// 				});
+//
+// 				// После того как метка была создана, добавляем её на карту.
+// 				myMap.geoObjects.add(myPlacemark);
+// 		});
