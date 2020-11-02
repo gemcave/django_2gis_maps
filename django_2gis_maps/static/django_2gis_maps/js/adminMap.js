@@ -57,7 +57,8 @@ function init() {
     ],
   });
 
-  prepareMap(geolocationInput);
+  prepareMap();
+
   myMap.events.add("click", function (e) {
     if (marker == null) {
       console.log("NO Marker: ");
@@ -70,26 +71,25 @@ function init() {
         },
         {
           preset: "islands#darkGreenIcon",
+          draggable: true,
         }
       );
       myMap.geoObjects.add(marker);
       geolocationInput.value = `${e.get("coords").join(",")}`;
     } else {
-      // console.log("Marker: "+ marker)
       marker.geometry.setCoordinates(e.get("coords"));
       myMap.geoObjects.add(marker);
     }
 
     marker.events.add("drag", function (e) {
-      // console.log(marker.geometry.getCoordinates());
       geolocationInput.value = `${marker.geometry.getCoordinates().join(",")}`;
     });
   });
 
-  function prepareMap(geoInput) {
-    if (geoInput.value) {
+  function prepareMap() {
+    if (geolocationInput.value) {
       marker = new ymaps.Placemark(
-        geoInput.value.split(","),
+        geolocationInput.value.split(","),
         {
           hintContent: "Содержимое всплывающей подсказки",
         },
@@ -98,6 +98,7 @@ function init() {
           draggable: true,
         }
       );
+      myMap.geoObjects.add(marker);
       return true;
     }
     return false;
